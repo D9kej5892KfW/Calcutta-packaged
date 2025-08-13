@@ -1,0 +1,52 @@
+{
+  "dashboard_diagnosis": {
+    "event_distribution_panel": {
+      "status": "QUERY_WORKS_BUT_VISUALIZATION_ISSUE",
+      "problem": "Query returns data but may have time range or visualization config issues",
+      "current_query": "sort_desc(sum by (event) (count_over_time({service=\"claude-telemetry\", session=~\"$session\"}[$__range])))",
+      "test_result": "Returns 9 event types: code_search, command_execution, file_read, file_write, etc.",
+      "fixes": [
+        "Change [$__range] to [$interval] for better time range handling",
+        "Ensure session filter is set to 'All' or specific session",
+        "Check visualization settings (pie chart configuration)"
+      ]
+    },
+    "workflow_analysis_panel": {
+      "status": "DATA_NOT_AVAILABLE", 
+      "problem": "Query expects 'workflow' label that doesn't exist in telemetry data",
+      "current_query": "sum by (workflow) (count_over_time({service=\"claude-telemetry\", session=~\"$session\"}[$__range]))",
+      "available_labels": ["event", "hook_event", "tool", "session", "project", "reasoning", "scope"],
+      "fixes": [
+        "Replace 'workflow' with 'tool' to show tool usage patterns",
+        "Use 'event' to show event type distribution over time",
+        "Create derived workflow classification based on tool combinations"
+      ]
+    }
+  },
+  "fixed_queries": {
+    "event_distribution_fixed": {
+      "title": "📊 Event Distribution",
+      "type": "piechart",
+      "query": "sort_desc(sum by (event) (count_over_time({service=\"claude-telemetry\", session=~\"$session\"}[$interval])))",
+      "description": "Uses $interval instead of $__range for better performance"
+    },
+    "workflow_analysis_option1": {
+      "title": "🎯 Tool Usage Analysis", 
+      "type": "timeseries",
+      "query": "sum by (tool) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval]))",
+      "description": "Shows tool usage patterns over time instead of workflows"
+    },
+    "workflow_analysis_option2": {
+      "title": "🎯 Event Pattern Analysis",
+      "type": "timeseries", 
+      "query": "sum by (event) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval]))",
+      "description": "Shows event type patterns over time"
+    },
+    "workflow_analysis_option3": {
+      "title": "🎯 Development Workflow Analysis",
+      "type": "timeseries",
+      "query": "label_replace(sum by (tool) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval])), \"workflow\", \"File Operations\", \"tool\", \"Read|Write|Edit\") or label_replace(sum by (tool) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval])), \"workflow\", \"Code Analysis\", \"tool\", \"Grep|Glob\") or label_replace(sum by (tool) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval])), \"workflow\", \"Task Management\", \"tool\", \"TodoWrite\") or label_replace(sum by (tool) (rate({service=\"claude-telemetry\", session=~\"$session\"}[$interval])), \"workflow\", \"Command Execution\", \"tool\", \"Bash\")",
+      "description": "Creates derived workflow categories from tool usage"
+    }
+  }
+}

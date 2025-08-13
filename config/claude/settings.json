@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/jeff/claude-code/agent-telemetry/config/claude/hooks/telemetry-hook.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/jeff/claude-code/agent-telemetry/config/claude/hooks/telemetry-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

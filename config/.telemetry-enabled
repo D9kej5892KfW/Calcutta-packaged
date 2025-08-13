@@ -1,0 +1,8 @@
+# Claude Code Telemetry Enabled
+# This file enables telemetry monitoring for this project
+# Created: 2025-08-01
+# Project: agent-telemetry
+# 
+# Remove this file to disable telemetry collection
+# The hook script will still run but won't log detailed events
+enabled=true

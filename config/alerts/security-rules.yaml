@@ -1,0 +1,241 @@
+# Claude Agent Telemetry - Security Alert Rules Configuration
+# Phase 6.1: Enhanced Security Alerting
+#
+# This file defines security patterns and alert rules for real-time monitoring
+# of Claude Code agent activities for potential security violations.
+
+# Global settings
+settings:
+  enabled: true
+  poll_interval: 5  # seconds
+  alert_retention_days: 30
+  max_alerts_per_minute: 10
+
+# Security rule definitions
+rules:
+  # Critical security violations
+  scope_violation:
+    enabled: true
+    severity: CRITICAL
+    pattern: 'outside_project_scope.*true'
+    description: "Agent accessed files outside project scope"
+    category: "boundary_violation"
+    response:
+      immediate_alert: true
+      escalate_after: 1  # escalate after 1 occurrence
+      cooldown_minutes: 5
+    context_fields:
+      - "file_path"
+      - "session_id"
+      - "tool_name"
+      - "project_path"
+
+  dangerous_commands:
+    enabled: true
+    severity: HIGH
+    pattern: 'command.*(?:rm\s+-rf|sudo|chmod\s+777|mkfs|dd\s+if=|>/dev/)'
+    description: "Potentially dangerous command executed"
+    category: "dangerous_operation"
+    response:
+      immediate_alert: true
+      escalate_after: 2
+      cooldown_minutes: 10
+    context_fields:
+      - "command"
+      - "session_id"
+      - "tool_name"
+      - "user_id"
+
+  privilege_escalation:
+    enabled: true
+    severity: HIGH
+    pattern: 'command.*(?:sudo|su|chmod|chown|usermod|passwd)'
+    description: "Privilege escalation attempt detected"
+    category: "privilege_escalation"
+    response:
+      immediate_alert: true
+      escalate_after: 1
+      cooldown_minutes: 15
+    context_fields:
+      - "command"
+      - "session_id"
+      - "user_id"
+
+  # Medium severity violations
+  sensitive_files:
+    enabled: true
+    severity: MEDIUM
+    pattern: 'file_path.*(?:\.env|\.key|\.pem|\.crt|password|secret|config|\.ssh|id_rsa)'
+    description: "Access to sensitive file detected"
+    category: "sensitive_access"
+    response:
+      immediate_alert: true
+      escalate_after: 3
+      cooldown_minutes: 5
+    context_fields:
+      - "file_path"
+      - "session_id"
+      - "tool_name"
+      - "event_type"
+
+  network_activity:
+    enabled: true
+    severity: MEDIUM
+    pattern: 'command.*(?:curl|wget|nc|netcat|ssh|scp|rsync|git\s+clone)'
+    description: "External network activity detected"
+    category: "network_access"
+    response:
+      immediate_alert: false  # Only log, don't immediately alert
+      escalate_after: 5
+      cooldown_minutes: 30
+    context_fields:
+      - "command"
+      - "session_id"
+      - "tool_name"
+
+  # Behavioral anomalies
+  high_frequency_operations:
+    enabled: true
+    severity: MEDIUM
+    pattern: null  # Handled by behavioral analysis
+    description: "Unusually high frequency of operations detected"
+    category: "behavioral_anomaly"
+    threshold:
+      operations_per_minute: 20
+      window_minutes: 5
+    response:
+      immediate_alert: true
+      escalate_after: 1
+      cooldown_minutes: 15
+    context_fields:
+      - "session_id"
+      - "operation_count"
+      - "time_window"
+
+  repeated_scope_violations:
+    enabled: true
+    severity: HIGH
+    pattern: null  # Handled by behavioral analysis
+    description: "Multiple scope violations in session"
+    category: "behavioral_anomaly"
+    threshold:
+      violations_per_session: 3
+      window_minutes: 30
+    response:
+      immediate_alert: true
+      escalate_after: 1
+      cooldown_minutes: 60
+    context_fields:
+      - "session_id"
+      - "violation_count"
+      - "time_window"
+
+  # System integrity checks
+  system_file_modification:
+    enabled: true
+    severity: HIGH
+    pattern: 'file_path.*(?:/etc/|/usr/bin/|/usr/sbin/|/var/log/|/boot/)'
+    description: "System file modification attempt"
+    category: "system_integrity"
+    response:
+      immediate_alert: true
+      escalate_after: 1
+      cooldown_minutes: 0  # No cooldown for system files
+    context_fields:
+      - "file_path"
+      - "session_id"
+      - "tool_name"
+      - "event_type"
+
+  configuration_tampering:
+    enabled: true
+    severity: MEDIUM
+    pattern: 'file_path.*(?:\.conf|\.cfg|\.ini|settings\.json|\.yaml|\.yml).*(?:/etc/|/usr/local/etc/)'
+    description: "System configuration file access"
+    category: "config_access"
+    response:
+      immediate_alert: true
+      escalate_after: 2
+      cooldown_minutes: 10
+    context_fields:
+      - "file_path"
+      - "session_id"
+      - "tool_name"
+      - "event_type"
+
+# Notification channel configuration
+notifications:
+  console:
+    enabled: true
+    min_severity: MEDIUM
+    format: "text"
+    colors: true
+
+  logfile:
+    enabled: true
+    path: "data/alerts/security-alerts.log"
+    format: "json"
+    rotation:
+      max_size_mb: 100
+      keep_files: 5
+
+  email:
+    enabled: false
+    smtp_server: "localhost"
+    smtp_port: 587
+    use_tls: true
+    username: ""
+    password: ""
+    from_address: "claude-alerts@localhost"
+    recipients:
+      CRITICAL: ["admin@example.com"]
+      HIGH: ["security@example.com", "admin@example.com"]
+      MEDIUM: ["security@example.com"]
+    subject_template: "[CLAUDE-ALERT-{severity}] {description}"
+
+  webhook:
+    enabled: false
+    url: ""
+    method: "POST"
+    headers:
+      "Content-Type": "application/json"
+      "User-Agent": "Claude-Alert-Engine/1.0"
+    timeout_seconds: 10
+    retry_attempts: 3
+    payload_template: |
+      {
+        "alert_id": "{alert_id}",
+        "severity": "{severity}",
+        "description": "{description}",
+        "timestamp": "{timestamp}",
+        "category": "{category}",
+        "session_id": "{session_id}",
+        "context": {context}
+      }
+
+  grafana:
+    enabled: true
+    url: "http://localhost:3000"
+    api_key: ""  # Optional, for annotation API
+    dashboard_uid: "claude-performance-fixed"
+    annotation_tags: ["security", "alert"]
+
+# Alert deduplication settings
+deduplication:
+  enabled: true
+  window_minutes: 5
+  key_fields: ["rule_name", "session_id", "category"]
+  max_occurrences: 3
+
+# Performance and reliability settings
+performance:
+  max_memory_mb: 50
+  max_cpu_percent: 2
+  query_batch_size: 100
+  max_query_range_hours: 1
+  
+reliability:
+  health_check_interval: 60  # seconds
+  restart_on_error: true
+  max_consecutive_errors: 5
+  backoff_strategy: "exponential"

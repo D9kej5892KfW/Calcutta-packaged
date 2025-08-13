@@ -1,0 +1,32 @@
+# Data and logs (exclude from version control)
+data/
+logs/
+temp/
+
+# Loki binary (downloaded file)
+bin/loki
+
+# Process files
+*.pid
+
+# Downloaded archives
+*.zip
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.log
+
+# Grafana binaries (excluded due to size)
+bin/grafana*
+bin/grafana-v*/
+
+# Python virtual environment (Phase 6.2 ML dependencies)
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Old backup files
+README-old.md

@@ -1,0 +1,62 @@
+# Claude Agent Telemetry - Context Exclusions
+# Optimizes /load project by excluding binaries, logs, and data files
+
+# ===== BINARIES & EXECUTABLES =====
+# Large binary files that don't provide code context
+bin/
+*.exe
+*.bin
+*.so
+*.dylib
+
+# ===== SERVICE LOGS & RUNTIME DATA =====
+# Operational logs and runtime files (not relevant for code context)
+logs/
+*.log
+*.pid
+*.lock
+
+# ===== LOKI DATABASE & STORAGE =====
+# Loki storage backend (binary data, not code)
+data/loki/
+data/grafana/grafana.db
+data/grafana/csv/
+data/grafana/pdf/
+data/grafana/png/
+
+# ===== TEMPORARY & CACHE FILES =====
+# Temporary processing files and caches
+*.tmp
+*.temp
+*.cache
+.DS_Store
+Thumbs.db
+
+# ===== COMPRESSED ARCHIVES =====
+# Downloaded installation files
+*.zip
+*.tar.gz
+*.tar.xz
+*.gz
+
+# ===== PYTHON ML ENVIRONMENT (Phase 6.2) =====
+# Virtual environment and ML artifacts (not relevant for code context)
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+data/analytics/models/*.joblib
+data/analytics/features/*.csv
+
+# ===== KEEP FOR CONTEXT =====
+# These files ARE included (commented for clarity):
+# config/              - Configuration files (essential)
+# scripts/             - Service management scripts (essential)  
+# docs/                - Documentation (essential)
+# README.md            - Project overview (essential)
+# data/logs/*.jsonl    - Sample telemetry data (useful for context)
+# *.md                 - All markdown documentation
+# *.sh                 - Shell scripts
+# *.json               - Configuration files
+# *.yaml               - Configuration files

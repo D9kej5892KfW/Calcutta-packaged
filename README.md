@@ -1,0 +1,219 @@
+# Claude Agent Telemetry
+
+> **Production-ready monitoring for Claude Code activities**  
+> Real-time telemetry, security analysis, and ML-powered behavioral insights
+
+[![Setup](https://img.shields.io/badge/setup-one%20command-brightgreen)](#quick-start)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-blue)](#compatibility)
+[![License](https://img.shields.io/badge/license-MIT-green)](#license)
+
+## ✨ Features
+
+- **🔍 Complete Activity Monitoring** - Every Claude tool usage captured and analyzed
+- **🛡️ Security Boundary Enforcement** - Real-time detection of out-of-scope access
+- **🧠 ML-Powered Analytics** - Behavioral pattern analysis with anomaly detection
+- **📊 Live Dashboards** - Real-time Grafana visualizations with 34K+ data points
+- **🚀 Zero-Config Setup** - One command installation with automatic dependency management
+- **🔗 Multi-Project Support** - Monitor unlimited projects from central installation
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone and setup (one command!)
+git clone https://github.com/D9kej5892KfW/Calcutta-multi.git claude-telemetry
+cd claude-telemetry
+npm run setup
+
+# 2. Start monitoring
+npm start
+
+# 3. Open dashboard
+npm run dashboard
+```
+
+**That's it!** Your Claude Code activity is now being monitored in real-time.
+
+## 📦 What You Get
+
+### **Instant Setup**
+- ✅ **Automated dependency installation** (Python, system tools)
+- ✅ **Pre-built binaries** (Loki, Grafana) - no compilation needed
+- ✅ **Health validation** - comprehensive system checks
+- ✅ **Claude Code integration** - automatic hook configuration
+
+### **Production Features**
+- ✅ **34K+ telemetry entries** processed and analyzed
+- ✅ **Sub-second queries** with efficient data storage (7.2MB for full dataset)
+- ✅ **Real-time dashboards** with customizable time windows
+- ✅ **Security monitoring** with 12+ detection rules
+- ✅ **Cross-platform** Linux and macOS support
+
+## 📋 Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run setup` | **One-time setup** - installs everything automatically |
+| `npm start` | **Start monitoring** - Loki + Grafana services |
+| `npm stop` | **Stop monitoring** - clean shutdown |
+| `npm run dashboard` | **Open Grafana** - launches browser to dashboard |
+| `npm run connect` | **Connect project** - add current directory to monitoring |
+| `npm run status` | **Check health** - validate all services |
+| `npm run logs` | **Live stream** - watch telemetry in real-time |
+| `npm run health` | **Health check** - comprehensive system validation |
+| `npm test` | **End-to-end test** - validate complete data flow |
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Claude Code   │───▶│  Telemetry Hook  │───▶│  Loki Storage   │
+│   Tool Usage    │    │  (Pre/Post Tool) │    │  + Local Backup │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│    Grafana      │◀───│  Query Engine    │◀───│   Loki Server   │
+│   Dashboard     │    │  (LogQL/HTTP)    │    │   (Port 3100)   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+**Data Flow**: Claude Tool → Hook → Loki → Grafana → Insights
+
+## 📊 Monitoring Capabilities
+
+### **Tools Monitored**
+- **File Operations**: `Read`, `Write`, `Edit`, `MultiEdit`
+- **Command Execution**: `Bash`, shell commands with arguments
+- **Code Analysis**: `Grep`, `Glob`, search patterns
+- **AI Operations**: `Task` delegation, `WebFetch`, `WebSearch`
+- **Task Management**: `TodoWrite`, progress tracking
+
+### **Security Features**
+- **Boundary Detection**: Flags access outside project scope
+- **Command Monitoring**: Captures all shell executions
+- **Session Tracking**: Correlates activities by session ID
+- **Risk Scoring**: ML-based behavioral analysis
+
+### **Analytics Pipeline**
+- **Real-time Processing**: Live telemetry ingestion
+- **Feature Extraction**: 16+ behavioral patterns
+- **Anomaly Detection**: Isolation Forest models
+- **Trend Analysis**: Historical pattern recognition
+
+## 🌐 Dashboards
+
+Access comprehensive monitoring at **http://localhost:3000** (admin/admin):
+
+- **📈 Performance Dashboard** - Tool usage, response times, activity rates
+- **🔒 Security Dashboard** - Boundary violations, command patterns, risk alerts
+- **🧠 Analytics Dashboard** - Behavioral insights, anomaly detection, trends
+- **📊 System Dashboard** - Service health, data processing, storage metrics
+
+## 🔧 Advanced Usage
+
+### **Multi-Project Monitoring**
+```bash
+# Connect any project to telemetry
+cd /path/to/your-project
+npm run connect
+
+# List all monitored projects
+npm run status
+
+# View project-specific data in Grafana
+# Filter: project="your-project-name"
+```
+
+### **Custom Queries**
+```bash
+# All activity for a specific project
+curl -G "http://localhost:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={service="claude-telemetry", project="my-project"}'
+
+# Security violations
+curl -G "http://localhost:3100/loki/api/v1/query_range" \
+  --data-urlencode 'query={service="claude-telemetry"} |= "outside_project_scope.*true"'
+```
+
+### **Data Export**
+```bash
+# Export telemetry data
+cp data/logs/claude-telemetry.jsonl /path/to/backup/
+
+# Analytics data
+tar -czf telemetry-backup.tar.gz data/analytics/
+```
+
+## 🛠️ Troubleshooting
+
+### **Setup Issues**
+```bash
+npm run health     # Comprehensive health check
+npm run validate   # Validate installation
+npm run setup      # Re-run setup if needed
+```
+
+### **Service Issues**
+```bash
+npm run status     # Check service status
+npm restart        # Restart all services
+npm run logs       # View live telemetry
+```
+
+### **Common Problems**
+
+| Problem | Solution |
+|---------|----------|
+| "Loki not ready" | `npm restart` |
+| "Missing dependencies" | `npm run setup` |
+| "Permission denied" | `chmod +x scripts/*.sh` |
+| "Python import error" | Check virtual environment: `source venv/bin/activate` |
+
+## 📋 Requirements
+
+### **Automatic (handled by setup)**
+- Python 3.8+ with pip
+- System tools: `curl`, `jq`
+- ~1.6GB disk space
+
+### **Manual Prerequisites**
+- Claude Code installed and working
+- Linux or macOS operating system
+- Internet connection (for initial setup)
+
+## 🔐 Security & Privacy
+
+- **Local-only**: All data stays on your machine
+- **No external transmission**: Zero network dependencies after setup
+- **Metadata-only**: Tool usage patterns, not file contents
+- **Configurable**: Easy enable/disable per project
+- **Audit trail**: Complete activity history for compliance
+
+## 📖 Documentation
+
+- **Setup Guide**: This README
+- **Architecture Deep-dive**: `docs/claude-agent-telemetry.md`
+- **Dashboard Guide**: `docs/dashboard/`
+- **API Reference**: Loki LogQL and HTTP API documentation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature-name`
+3. Test changes: `npm test`
+4. Submit pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+---
+
+## 💡 Pro Tips
+
+- **Use `npm run logs`** to watch live telemetry during development
+- **Filter by project** in Grafana: `{project="your-project-name"}`
+- **Health checks** are your friend: `npm run health` for quick diagnostics
+- **Export data** regularly for long-term analysis and backup
+
+**Ready to monitor your Claude Code activities like a pro? Run `npm run setup` and get started in under 2 minutes!** 🚀

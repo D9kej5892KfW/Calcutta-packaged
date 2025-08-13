@@ -1,0 +1,596 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "claude-advanced-analytics-v2",
+    "title": "Claude Advanced Analytics Dashboard",
+    "description": "Enhanced telemetry dashboard with advanced LogQL queries, agent delegation insights, and performance analytics",
+    "tags": ["claude", "advanced", "analytics", "delegation", "performance"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-3h",
+      "to": "now"
+    },
+    "style": "dark",
+    "theme": "dark",
+    "templating": {
+      "list": [
+        {
+          "name": "tool",
+          "type": "query",
+          "query": "label_values({service=\"claude-telemetry\"} | json, tool_name)",
+          "datasource": {
+            "type": "loki",
+            "uid": "aetvioshimfwge"
+          },
+          "multi": true,
+          "includeAll": true,
+          "allValue": ".*",
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          }
+        },
+        {
+          "name": "interval",
+          "type": "interval",
+          "query": "30s,1m,5m,10m,30m,1h",
+          "auto": true,
+          "auto_min": "30s",
+          "current": {
+            "selected": false,
+            "text": "auto",
+            "value": "$__auto_interval_interval"
+          }
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "🎯 SuperClaude Command Usage",
+        "type": "stat",
+        "description": "SuperClaude commands detected in telemetry",
+        "targets": [
+          {
+            "expr": "sum(count_over_time({service=\"claude-telemetry\"} | json | superclaude_context_commands != \"\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#DC2626", "value": null},
+                {"color": "#F59E0B", "value": 1},
+                {"color": "#10B981", "value": 10},
+                {"color": "#3B82F6", "value": 50}
+              ]
+            },
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          }
+        },
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      },
+      {
+        "id": 2,
+        "title": "🧠 MCP Server Usage",
+        "type": "stat",
+        "description": "MCP server integrations detected",
+        "targets": [
+          {
+            "expr": "sum(count_over_time({service=\"claude-telemetry\"} | json | superclaude_context_mcp_servers != \"\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#6B7280", "value": null},
+                {"color": "#8B5CF6", "value": 1},
+                {"color": "#3B82F6", "value": 5},
+                {"color": "#10B981", "value": 20}
+              ]
+            },
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          }
+        },
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 0},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      },
+      {
+        "id": 3,
+        "title": "🤖 Agent Delegations",
+        "type": "stat",
+        "description": "Task tool sub-agent delegations",
+        "targets": [
+          {
+            "expr": "sum(count_over_time({service=\"claude-telemetry\"} | json | event_type=\"sub_agent_delegation\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#6B7280", "value": null},
+                {"color": "#F59E0B", "value": 1},
+                {"color": "#3B82F6", "value": 5},
+                {"color": "#8B5CF6", "value": 15}
+              ]
+            },
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          }
+        },
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 0},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      },
+      {
+        "id": 4,
+        "title": "⚡ Operations Rate",
+        "type": "stat",
+        "description": "Current operations per minute",
+        "targets": [
+          {
+            "expr": "sum(rate({service=\"claude-telemetry\"} | json [$interval])) * 60",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#6B7280", "value": null},
+                {"color": "#10B981", "value": 1},
+                {"color": "#3B82F6", "value": 10},
+                {"color": "#F59E0B", "value": 30}
+              ]
+            },
+            "unit": "ops/min",
+            "min": 0,
+            "decimals": 1
+          }
+        },
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 0},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      },
+      {
+        "id": 5,
+        "title": "📊 Tool Usage Over Time",
+        "type": "timeseries",
+        "description": "Tool usage patterns with filtering",
+        "targets": [
+          {
+            "expr": "sum by (tool_name) (rate({service=\"claude-telemetry\"} | json | tool_name =~ \"$tool\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "{{tool_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "gradientMode": "opacity",
+              "spanNulls": true,
+              "showPoints": "never",
+              "pointSize": 5,
+              "stacking": {"mode": "none", "group": "A"}
+            },
+            "color": {"mode": "palette-classic"},
+            "unit": "ops/s",
+            "min": 0,
+            "decimals": 2
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+        "options": {
+          "tooltip": {"mode": "multi", "sort": "desc"},
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["lastNotNull", "mean", "max"],
+            "showLegend": true
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "🥧 Tool Distribution",
+        "type": "piechart",
+        "description": "Distribution of tool usage",
+        "targets": [
+          {
+            "expr": "sort_desc(sum by (tool_name) (count_over_time({service=\"claude-telemetry\"} | json | tool_name =~ \"$tool\" [$interval])))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "{{tool_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "pieType": "pie",
+          "tooltip": {"mode": "single"},
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": ["value", "percent"]
+          },
+          "displayLabels": ["name", "percent"]
+        }
+      },
+      {
+        "id": 7,
+        "title": "🎯 SuperClaude Command Timeline",
+        "type": "timeseries",
+        "description": "SuperClaude command usage over time",
+        "targets": [
+          {
+            "expr": "sum by (commands) (rate({service=\"claude-telemetry\"} | json | superclaude_context_commands != \"\" | label_format commands=\"{{.superclaude_context_commands}}\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "{{commands}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "lineWidth": 1,
+              "fillOpacity": 80,
+              "gradientMode": "none",
+              "spanNulls": false,
+              "showPoints": "never",
+              "pointSize": 5,
+              "stacking": {"mode": "normal", "group": "A"}
+            },
+            "color": {"mode": "palette-classic"},
+            "unit": "ops/s",
+            "min": 0,
+            "decimals": 3
+          }
+        },
+        "gridPos": {"h": 6, "w": 24, "x": 0, "y": 14},
+        "options": {
+          "tooltip": {"mode": "multi", "sort": "desc"},
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["lastNotNull", "max"],
+            "showLegend": true
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "🧠 MCP Server Activity",
+        "type": "timeseries",
+        "description": "MCP server usage patterns",
+        "targets": [
+          {
+            "expr": "sum by (mcp_servers) (rate({service=\"claude-telemetry\"} | json | superclaude_context_mcp_servers != \"\" | label_format mcp_servers=\"{{.superclaude_context_mcp_servers}}\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "{{mcp_servers}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "gradientMode": "opacity",
+              "spanNulls": true,
+              "showPoints": "auto",
+              "pointSize": 5,
+              "stacking": {"mode": "none", "group": "A"}
+            },
+            "color": {"mode": "palette-spectrum"},
+            "unit": "ops/s",
+            "min": 0,
+            "decimals": 3
+          }
+        },
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 20},
+        "options": {
+          "tooltip": {"mode": "multi", "sort": "desc"},
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["lastNotNull", "mean"],
+            "showLegend": true
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "🤖 Agent Delegation Analysis",
+        "type": "timeseries",
+        "description": "Sub-agent delegation patterns and efficiency",
+        "targets": [
+          {
+            "expr": "sum(rate({service=\"claude-telemetry\"} | json | event_type=\"sub_agent_delegation\" [$interval]))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "Delegations/sec"
+          },
+          {
+            "expr": "sum(rate({service=\"claude-telemetry\"} | json | tool_name=\"Task\" [$interval]))",
+            "refId": "B", 
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "legendFormat": "Task Tool Usage/sec"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 15,
+              "gradientMode": "opacity",
+              "spanNulls": true,
+              "showPoints": "auto",
+              "pointSize": 5,
+              "stacking": {"mode": "none", "group": "A"}
+            },
+            "color": {"mode": "palette-classic"},
+            "unit": "ops/s",
+            "min": 0,
+            "decimals": 3
+          }
+        },
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 20},
+        "options": {
+          "tooltip": {"mode": "multi", "sort": "desc"},
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["lastNotNull", "mean", "max"],
+            "showLegend": true
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "📈 Performance Trends",
+        "type": "table",
+        "description": "Tool performance and usage statistics",
+        "targets": [
+          {
+            "expr": "sort_desc(sum by (tool_name) (count_over_time({service=\"claude-telemetry\"} | json | tool_name =~ \"$tool\" [$interval])))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            },
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          },
+          "overrides": [
+            {
+              "matcher": {"id": "byName", "options": "tool_name"},
+              "properties": [
+                {"id": "displayName", "value": "🔧 Tool"},
+                {"id": "custom.width", "value": 150}
+              ]
+            },
+            {
+              "matcher": {"id": "byName", "options": "Value"},
+              "properties": [
+                {"id": "displayName", "value": "📊 Count"},
+                {"id": "custom.width", "value": 100}
+              ]
+            }
+          ]
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26},
+        "options": {
+          "showHeader": true,
+          "sortBy": [{"displayName": "📊 Count", "desc": true}]
+        }
+      },
+      {
+        "id": 11,
+        "title": "🔍 Recent Activity Stream",
+        "type": "logs",
+        "description": "Live stream of telemetry events",
+        "targets": [
+          {
+            "expr": "{service=\"claude-telemetry\"} | json | tool_name =~ \"$tool\"",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26},
+        "options": {
+          "showTime": true,
+          "showLabels": false,
+          "showCommonLabels": false,
+          "wrapLogMessage": true,
+          "prettifyLogMessage": true,
+          "enableLogDetails": true,
+          "dedupStrategy": "none",
+          "sortOrder": "Descending"
+        }
+      },
+      {
+        "id": 12,
+        "title": "🎛️ Session Analytics",
+        "type": "stat",
+        "description": "Session-based productivity metrics",
+        "targets": [
+          {
+            "expr": "count(count by (session_id) (count_over_time({service=\"claude-telemetry\"} | json [$interval])))",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#6B7280", "value": null},
+                {"color": "#3B82F6", "value": 1},
+                {"color": "#10B981", "value": 2},
+                {"color": "#F59E0B", "value": 5}
+              ]
+            },
+            "unit": "short",
+            "min": 0,
+            "decimals": 0
+          }
+        },
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 34},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      },
+      {
+        "id": 13,
+        "title": "🚀 Productivity Score",
+        "type": "stat",
+        "description": "Delegation efficiency ratio",
+        "targets": [
+          {
+            "expr": "(sum(count_over_time({service=\"claude-telemetry\"} | json | event_type=\"sub_agent_delegation\" [$interval])) / sum(count_over_time({service=\"claude-telemetry\"} | json [$interval]))) * 100",
+            "refId": "A",
+            "datasource": {
+              "type": "loki",
+              "uid": "aetvioshimfwge"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "#DC2626", "value": null},
+                {"color": "#F59E0B", "value": 5},
+                {"color": "#10B981", "value": 15},
+                {"color": "#3B82F6", "value": 30}
+              ]
+            },
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "decimals": 1
+          }
+        },
+        "gridPos": {"h": 4, "w": 8, "x": 8, "y": 34},
+        "options": {
+          "reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""},
+          "colorMode": "background",
+          "graphMode": "area",
+          "justifyMode": "center"
+        }
+      }
+    ]
+  }
+}
