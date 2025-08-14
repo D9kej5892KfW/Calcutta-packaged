@@ -256,9 +256,9 @@ test_loki() {
 setup_claude_integration() {
     show_progress "Setting up Claude Code integration"
     
-    if [ -f "$PROJECT_DIR/install-claude-commands.sh" ]; then
+    if [ -f "$PROJECT_DIR/scripts/lib/maintenance/install-claude-commands.sh" ]; then
         log_step "Installing Claude Code commands"
-        "$PROJECT_DIR/install-claude-commands.sh"
+        "$PROJECT_DIR/scripts/lib/maintenance/install-claude-commands.sh"
         log_success "Claude Code integration configured"
     else
         log_warning "Claude Code integration script not found"
