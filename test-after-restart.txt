@@ -1,6 +1,0 @@
-Testing telemetry after Claude Code restart.
-
-This should generate fresh telemetry data that appears in the dashboard.
-
-Timestamp: $(date)
-Session: Post-restart test
