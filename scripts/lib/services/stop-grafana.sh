@@ -1,8 +1,14 @@
 #\!/bin/bash
 # Stop Grafana server
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PID_FILE="$PROJECT_DIR/logs/grafana.pid"
+# Source the common path utilities
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "$SCRIPT_DIR/../common/paths.sh" || {
+    echo "FATAL: Could not load path utilities" >&2
+    exit 1
+}
+
+PID_FILE="$(get_grafana_pid)"
 
 if [[ -f "$PID_FILE" ]]; then
     PID=$(<"$PID_FILE")

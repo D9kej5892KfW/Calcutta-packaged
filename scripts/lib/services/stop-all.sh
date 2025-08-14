@@ -2,7 +2,12 @@
 # Quick shutdown alias - simple version of shutdown.sh
 # Usage: ./scripts/stop-all.sh
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Source the common path utilities
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "$SCRIPT_DIR/../common/paths.sh" || {
+    echo "FATAL: Could not load path utilities" >&2
+    exit 1
+}
 
 echo "🛑 Stopping all telemetry services..."
 

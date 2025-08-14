@@ -11,9 +11,15 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Get script directory (where agent-telemetry is located)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TELEMETRY_ROOT="$(dirname "$SCRIPT_DIR")"
+# Source the common path utilities
+SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
+source "$SCRIPT_DIR/../common/paths.sh" || {
+    echo -e "${RED}[ERROR]${NC} Could not load path utilities" >&2
+    exit 1
+}
+
+# Get telemetry root using portable path resolution
+TELEMETRY_ROOT="$(get_telemetry_root)"
 
 # Default configuration
 DEFAULT_LOKI_URL="http://localhost:3100"

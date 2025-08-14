@@ -1,0 +1,363 @@
+#!/bin/bash
+# Claude Agent Telemetry - Unified CLI Tool
+# Consolidates all telemetry operations into a single, easy-to-use interface
+
+set -e
+
+# Configuration
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPTS_DIR="$PROJECT_DIR/scripts"
+LIB_DIR="$SCRIPTS_DIR/lib"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+# Version
+VERSION="1.0.0"
+
+# Help text
+show_help() {
+    cat << EOF
+${BOLD}${CYAN}Claude Agent Telemetry CLI${NC} v${VERSION}
+
+${BOLD}USAGE:${NC}
+    claude-telemetry <command> [options]
+
+${BOLD}CORE COMMANDS:${NC}
+    ${GREEN}setup${NC}              Run complete system setup
+    ${GREEN}start${NC}              Start monitoring services (Loki + Grafana)
+    ${GREEN}stop${NC}               Stop all monitoring services
+    ${GREEN}restart${NC}            Restart all services
+    ${GREEN}status${NC}             Check system and service status
+    ${GREEN}dashboard${NC}          Open Grafana dashboard in browser
+
+${BOLD}PROJECT MANAGEMENT:${NC}
+    ${GREEN}connect [path]${NC}     Connect project to telemetry (current dir if no path)
+    ${GREEN}disconnect [path]${NC}  Disconnect project from telemetry
+    ${GREEN}projects${NC}           List all connected projects
+
+${BOLD}MONITORING & ANALYSIS:${NC}
+    ${GREEN}logs${NC}               View live telemetry stream
+    ${GREEN}health${NC}             Comprehensive health check
+    ${GREEN}validate${NC}           Validate system configuration
+    ${GREEN}test${NC}               Run end-to-end connectivity test
+
+${BOLD}DATA & ANALYTICS:${NC}
+    ${GREEN}analytics${NC}          Process telemetry data for ML analysis
+    ${GREEN}alerts${NC}             Manage alert system
+    ${GREEN}query [query]${NC}      Execute custom Loki query
+
+${BOLD}MAINTENANCE:${NC}
+    ${GREEN}cleanup${NC}            Clean up logs and temporary files
+    ${GREEN}backup${NC}             Backup telemetry data
+    ${GREEN}update${NC}             Update system configuration
+
+${BOLD}OPTIONS:${NC}
+    -h, --help          Show this help message
+    -v, --version       Show version information
+    --verbose           Enable verbose output
+    --dry-run           Show what would be done without executing
+
+${BOLD}EXAMPLES:${NC}
+    claude-telemetry setup                    # Complete system setup
+    claude-telemetry start                    # Start monitoring
+    claude-telemetry connect /path/to/project # Connect specific project
+    claude-telemetry status                   # Check system health
+    claude-telemetry logs                     # Watch live telemetry
+
+${BOLD}GETTING STARTED:${NC}
+    1. claude-telemetry setup      # One-time setup
+    2. claude-telemetry start      # Start monitoring
+    3. claude-telemetry dashboard  # Open dashboard
+
+For more information, visit: https://github.com/D9kej5892KfW/Calcutta-packaged
+EOF
+}
+
+# Logging functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+log_verbose() {
+    if [[ "${VERBOSE:-}" == "true" ]]; then
+        echo -e "${CYAN}[VERBOSE]${NC} $1"
+    fi
+}
+
+# Dry run function
+execute_or_dry_run() {
+    local command="$1"
+    local description="$2"
+    
+    if [[ "${DRY_RUN:-}" == "true" ]]; then
+        echo -e "${YELLOW}[DRY RUN]${NC} Would execute: $description"
+        echo -e "${CYAN}  Command:${NC} $command"
+    else
+        log_verbose "Executing: $command"
+        eval "$command"
+    fi
+}
+
+# Command implementations
+cmd_setup() {
+    log_info "Running complete system setup..."
+    execute_or_dry_run "$PROJECT_DIR/setup.sh" "Complete system setup"
+}
+
+cmd_start() {
+    log_info "Starting Claude Agent Telemetry services..."
+    execute_or_dry_run "$LIB_DIR/services/start-all.sh" "Start all services"
+}
+
+cmd_stop() {
+    log_info "Stopping Claude Agent Telemetry services..."
+    execute_or_dry_run "$LIB_DIR/services/stop-all.sh" "Stop all services"
+}
+
+cmd_restart() {
+    log_info "Restarting Claude Agent Telemetry services..."
+    cmd_stop
+    sleep 2
+    cmd_start
+}
+
+cmd_status() {
+    log_info "Checking system status..."
+    execute_or_dry_run "$LIB_DIR/maintenance/status.sh" "Check system status"
+}
+
+cmd_dashboard() {
+    log_info "Opening Grafana dashboard..."
+    execute_or_dry_run "$LIB_DIR/services/open-dashboard.sh" "Open Grafana dashboard"
+}
+
+cmd_connect() {
+    local project_path="${1:-$(pwd)}"
+    log_info "Connecting project: $project_path"
+    execute_or_dry_run "$LIB_DIR/projects/connect-project.sh '$project_path'" "Connect project to telemetry"
+}
+
+cmd_disconnect() {
+    local project_path="${1:-$(pwd)}"
+    log_info "Disconnecting project: $project_path"
+    execute_or_dry_run "$LIB_DIR/projects/disconnect-project.sh '$project_path'" "Disconnect project from telemetry"
+}
+
+cmd_projects() {
+    log_info "Listing connected projects..."
+    execute_or_dry_run "$LIB_DIR/projects/list-connected-projects.sh" "List connected projects"
+}
+
+cmd_logs() {
+    log_info "Streaming live telemetry logs..."
+    execute_or_dry_run "tail -f '$PROJECT_DIR/data/logs/claude-telemetry.jsonl'" "Stream live telemetry logs"
+}
+
+cmd_health() {
+    log_info "Running comprehensive health check..."
+    execute_or_dry_run "$LIB_DIR/maintenance/health-check.sh" "Comprehensive health check"
+}
+
+cmd_validate() {
+    log_info "Validating system configuration..."
+    execute_or_dry_run "$LIB_DIR/maintenance/validate-setup.sh" "Validate system configuration"
+}
+
+cmd_test() {
+    log_info "Running end-to-end connectivity test..."
+    execute_or_dry_run "$LIB_DIR/maintenance/test-telemetry.sh" "End-to-end connectivity test"
+}
+
+cmd_analytics() {
+    log_info "Processing telemetry data for ML analysis..."
+    execute_or_dry_run "cd '$PROJECT_DIR' && python3 '$LIB_DIR/analytics/data-processor.py'" "Process analytics data"
+}
+
+cmd_alerts() {
+    local action="${1:-status}"
+    case "$action" in
+        start)
+            log_info "Starting alert engine..."
+            execute_or_dry_run "$LIB_DIR/alerts/start-alert-engine.sh" "Start alert engine"
+            ;;
+        stop)
+            log_info "Stopping alert engine..."
+            execute_or_dry_run "$LIB_DIR/alerts/stop-alert-engine.sh" "Stop alert engine"
+            ;;
+        status)
+            log_info "Checking alert engine status..."
+            execute_or_dry_run "$LIB_DIR/alerts/alert-status.sh" "Check alert engine status"
+            ;;
+        *)
+            log_error "Unknown alert action: $action"
+            echo "Available actions: start, stop, status"
+            exit 1
+            ;;
+    esac
+}
+
+cmd_query() {
+    local query="$1"
+    if [[ -z "$query" ]]; then
+        log_error "Query parameter required"
+        echo "Usage: claude-telemetry query 'LogQL query'"
+        echo "Example: claude-telemetry query '{service=\"claude-telemetry\"}'"
+        exit 1
+    fi
+    
+    log_info "Executing Loki query..."
+    execute_or_dry_run "curl -G 'http://localhost:3100/loki/api/v1/query_range' --data-urlencode 'query=$query'" "Execute Loki query"
+}
+
+cmd_cleanup() {
+    log_info "Cleaning up logs and temporary files..."
+    execute_or_dry_run "$LIB_DIR/maintenance/log-cleanup.sh" "Clean up logs and temporary files"
+}
+
+cmd_backup() {
+    log_info "Backing up telemetry data..."
+    local backup_file="telemetry-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+    execute_or_dry_run "tar -czf '$backup_file' -C '$PROJECT_DIR' data/ config/" "Create telemetry backup"
+    if [[ "${DRY_RUN:-}" != "true" ]]; then
+        log_success "Backup created: $backup_file"
+    fi
+}
+
+cmd_update() {
+    log_info "Updating system configuration..."
+    execute_or_dry_run "$LIB_DIR/maintenance/update-config.sh" "Update system configuration"
+}
+
+# Parse command line arguments
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            -v|--version)
+                echo "Claude Agent Telemetry CLI v${VERSION}"
+                exit 0
+                ;;
+            --verbose)
+                VERBOSE=true
+                shift
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            *)
+                # This is the command
+                COMMAND="$1"
+                shift
+                ARGS=("$@")
+                break
+                ;;
+        esac
+    done
+}
+
+# Main execution
+main() {
+    # Parse arguments
+    parse_args "$@"
+    
+    # Check if command was provided
+    if [[ -z "${COMMAND:-}" ]]; then
+        echo -e "${RED}Error:${NC} No command specified"
+        echo ""
+        show_help
+        exit 1
+    fi
+    
+    # Execute command
+    case "$COMMAND" in
+        setup)
+            cmd_setup
+            ;;
+        start)
+            cmd_start
+            ;;
+        stop)
+            cmd_stop
+            ;;
+        restart)
+            cmd_restart
+            ;;
+        status)
+            cmd_status
+            ;;
+        dashboard)
+            cmd_dashboard
+            ;;
+        connect)
+            cmd_connect "${ARGS[0]:-}"
+            ;;
+        disconnect)
+            cmd_disconnect "${ARGS[0]:-}"
+            ;;
+        projects)
+            cmd_projects
+            ;;
+        logs)
+            cmd_logs
+            ;;
+        health)
+            cmd_health
+            ;;
+        validate)
+            cmd_validate
+            ;;
+        test)
+            cmd_test
+            ;;
+        analytics)
+            cmd_analytics
+            ;;
+        alerts)
+            cmd_alerts "${ARGS[0]:-}"
+            ;;
+        query)
+            cmd_query "${ARGS[0]:-}"
+            ;;
+        cleanup)
+            cmd_cleanup
+            ;;
+        backup)
+            cmd_backup
+            ;;
+        update)
+            cmd_update
+            ;;
+        *)
+            log_error "Unknown command: $COMMAND"
+            echo ""
+            echo "Run 'claude-telemetry --help' for available commands"
+            exit 1
+            ;;
+    esac
+}
+
+# Run main function
+main "$@"

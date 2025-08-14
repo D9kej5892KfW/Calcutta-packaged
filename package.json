@@ -4,21 +4,23 @@
   "description": "Claude Agent Telemetry System - Production-ready monitoring for Claude Code activities",
   "main": "index.js",
   "scripts": {
-    "setup": "./setup.sh",
+    "setup": "./scripts/claude-telemetry setup",
     "presetup": "echo '🚀 Starting Claude Agent Telemetry setup...'",
     "postsetup": "echo '✅ Setup complete! Run npm start to begin monitoring'",
-    "start": "./scripts/start-all.sh",
-    "stop": "./scripts/stop-all.sh",
-    "restart": "npm run stop && npm run start",
-    "status": "./scripts/status.sh",
-    "connect": "./scripts/connect-project.sh",
-    "dashboard": "./scripts/open-dashboard.sh",
-    "logs": "tail -f data/logs/claude-telemetry.jsonl",
-    "health": "./scripts/health-check.sh",
-    "install-python-deps": "python3 -m pip install -r requirements.txt",
-    "validate": "./scripts/validate-setup.sh",
-    "uninstall": "./scripts/uninstall.sh",
-    "test": "./scripts/test-telemetry.sh"
+    "start": "./scripts/claude-telemetry start",
+    "stop": "./scripts/claude-telemetry stop",
+    "restart": "./scripts/claude-telemetry restart",
+    "status": "./scripts/claude-telemetry status",
+    "connect": "./scripts/claude-telemetry connect",
+    "dashboard": "./scripts/claude-telemetry dashboard",
+    "logs": "./scripts/claude-telemetry logs",
+    "health": "./scripts/claude-telemetry health",
+    "validate": "./scripts/claude-telemetry validate",
+    "test": "./scripts/claude-telemetry test",
+    "projects": "./scripts/claude-telemetry projects",
+    "analytics": "./scripts/claude-telemetry analytics",
+    "backup": "./scripts/claude-telemetry backup",
+    "cleanup": "./scripts/claude-telemetry cleanup"
   },
   "keywords": [
     "claude",
@@ -54,6 +56,6 @@
     "python_min_version": "3.8"
   },
   "bin": {
-    "claude-telemetry": "./bin/claude-telemetry-cli"
+    "claude-telemetry": "./scripts/claude-telemetry"
   }
 }

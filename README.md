@@ -50,6 +50,7 @@ npm run dashboard
 
 ## 📋 Commands
 
+### **npm Interface (Recommended)**
 | Command | Description |
 |---------|-------------|
 | `npm run setup` | **One-time setup** - installs everything automatically |
@@ -61,6 +62,31 @@ npm run dashboard
 | `npm run logs` | **Live stream** - watch telemetry in real-time |
 | `npm run health` | **Health check** - comprehensive system validation |
 | `npm test` | **End-to-end test** - validate complete data flow |
+
+### **Direct CLI Interface**
+```bash
+# Core operations
+./scripts/claude-telemetry setup              # Complete system setup
+./scripts/claude-telemetry start              # Start monitoring services
+./scripts/claude-telemetry stop               # Stop all services
+./scripts/claude-telemetry status             # Check system health
+./scripts/claude-telemetry dashboard          # Open Grafana dashboard
+
+# Project management
+./scripts/claude-telemetry connect [path]     # Connect project to telemetry
+./scripts/claude-telemetry disconnect [path]  # Disconnect project
+./scripts/claude-telemetry projects           # List connected projects
+
+# Analytics & maintenance
+./scripts/claude-telemetry analytics          # Process ML data
+./scripts/claude-telemetry backup             # Backup telemetry data
+./scripts/claude-telemetry cleanup            # Clean logs
+./scripts/claude-telemetry alerts start       # Start alert engine
+
+# Advanced usage
+./scripts/claude-telemetry --help             # Show all commands
+./scripts/claude-telemetry --dry-run status   # Preview actions
+```
 
 ## 🏗️ Architecture
 
