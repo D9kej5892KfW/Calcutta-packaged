@@ -1,11 +1,24 @@
 # Claude Agent Telemetry
 
-> **Production-ready monitoring for Claude Code activities**  
-> Real-time telemetry, security analysis, and ML-powered behavioral insights
+> **Production-ready monitoring for [Claude Code](https://claude.ai/code) AI development workflows**  
+> Real-time telemetry, security analysis, and ML-powered behavioral insights for solo developers
 
 [![Setup](https://img.shields.io/badge/setup-one%20command-brightgreen)](#quick-start)
-[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-blue)](#compatibility)
-[![License](https://img.shields.io/badge/license-MIT-green)](#license)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS-blue)](#requirements)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Production Ready](https://img.shields.io/badge/status-production%20ready-success)](docs/claude-agent-telemetry.md)
+
+## 🎯 What Is This?
+
+**Claude Code** is Anthropic's official CLI that lets you work with Claude AI directly from your terminal. This telemetry system **monitors your Claude Code usage** to help you:
+
+- **📊 Understand your AI workflow** - Which tools do you use most? How efficient are your patterns?
+- **🔍 Optimize productivity** - Identify bottlenecks, track improvements, analyze delegation patterns  
+- **🛡️ Monitor security boundaries** - Detect when Claude accesses files outside your project scope
+- **🧠 Learn from behavioral insights** - ML-powered analysis of your development patterns over time
+
+**Perfect for**: Solo developers, small teams, anyone wanting visibility into their Claude Code workflows  
+**Not for**: Enterprise security auditing, complex multi-tenant environments
 
 ## ✨ Features
 
@@ -47,6 +60,17 @@ npm run dashboard
 - ✅ **Real-time dashboards** with customizable time windows
 - ✅ **Security monitoring** with 12+ detection rules
 - ✅ **Cross-platform** Linux and macOS support
+
+## 📸 See It In Action
+
+![Dashboard Overview](screenshots/Basic-dashboard-1.png)
+*Real-time monitoring of Claude Code tool usage and performance metrics*
+
+![Security Monitoring](screenshots/Basic-dashboard-2.png)  
+*Security boundary detection and behavioral analysis*
+
+![Analytics Dashboard](screenshots/Basic-dashboard-3.png)
+*ML-powered insights and productivity patterns*
 
 ## 📋 Commands
 
@@ -197,15 +221,17 @@ npm run logs       # View live telemetry
 
 ## 📋 Requirements
 
+### **Prerequisites**
+- **[Claude Code](https://claude.ai/code) installed and working** - This is what we monitor!
+- **Linux or macOS** - Windows support coming soon
+- **Internet connection** - For initial setup only
+
 ### **Automatic (handled by setup)**
 - Python 3.8+ with pip
-- System tools: `curl`, `jq`
+- System tools: `curl`, `jq`  
 - ~1.6GB disk space
 
-### **Manual Prerequisites**
-- Claude Code installed and working
-- Linux or macOS operating system
-- Internet connection (for initial setup)
+> **New to Claude Code?** Get started at [claude.ai/code](https://claude.ai/code) - it's Anthropic's official CLI for AI-powered development.
 
 ## 🔐 Security & Privacy
 
@@ -222,6 +248,14 @@ npm run logs       # View live telemetry
 - **Dashboard Guide**: `docs/dashboard/`
 - **API Reference**: Loki LogQL and HTTP API documentation
 
+## 🚀 Getting Started
+
+1. **Install Claude Code** (if you haven't): Visit [claude.ai/code](https://claude.ai/code)
+2. **Clone this repo**: `git clone https://github.com/D9kej5892KfW/Calcutta-multi.git`
+3. **Run setup**: `npm run setup` 
+4. **Start monitoring**: `npm start`
+5. **Open dashboard**: `npm run dashboard`
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -231,7 +265,7 @@ npm run logs       # View live telemetry
 
 ## 📄 License
 
-MIT License - see LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
