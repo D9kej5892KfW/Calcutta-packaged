@@ -9,6 +9,45 @@ PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SCRIPTS_DIR="$PROJECT_DIR/scripts"
 LIB_DIR="$SCRIPTS_DIR/lib"
 
+# Binary management
+check_binaries_available() {
+    # Check if we're in npm mode (binaries downloaded to global cache)
+    if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]]; then
+        # Use Node.js to check binary availability
+        if command -v node >/dev/null 2>&1; then
+            node -e "
+                const BinaryManager = require('$PROJECT_DIR/lib/binary-manager');
+                const manager = new BinaryManager();
+                manager.checkBinariesHealth().then(health => {
+                    const allHealthy = Object.values(health).every(h => h.status === 'healthy');
+                    if (!allHealthy) {
+                        console.log('Binaries not available, triggering download...');
+                        process.exit(1);
+                    }
+                }).catch(() => process.exit(1));
+            " 2>/dev/null || return 1
+        else
+            return 1
+        fi
+    else
+        # Traditional mode - check local bin directory
+        [[ -x "$PROJECT_DIR/bin/loki" ]] && [[ -x "$PROJECT_DIR/bin/grafana-server" ]]
+    fi
+}
+
+ensure_binaries() {
+    if ! check_binaries_available; then
+        log_warning "Binaries not available, downloading..."
+        if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]]; then
+            # Use Node.js setup for npm installation
+            node "$PROJECT_DIR/setup.js"
+        else
+            # Use traditional setup script
+            "$PROJECT_DIR/setup.sh"
+        fi
+    fi
+}
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -120,7 +159,11 @@ execute_or_dry_run() {
 # Command implementations
 cmd_setup() {
     log_info "Running complete system setup..."
-    execute_or_dry_run "$PROJECT_DIR/setup.sh" "Complete system setup"
+    if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]]; then
+        execute_or_dry_run "node \"$PROJECT_DIR/setup.js\"" "Complete system setup (Node.js)"
+    else
+        execute_or_dry_run "$PROJECT_DIR/setup.sh" "Complete system setup (traditional)"
+    fi
 }
 
 cmd_start() {
@@ -290,6 +333,13 @@ main() {
         show_help
         exit 1
     fi
+    
+    # Ensure binaries are available for commands that need them
+    case "$COMMAND" in
+        start|restart|status|health|validate|test|logs|dashboard)
+            ensure_binaries
+            ;;
+    esac
     
     # Execute command
     case "$COMMAND" in

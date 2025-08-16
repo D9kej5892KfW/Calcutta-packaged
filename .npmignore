@@ -1,0 +1,41 @@
+# Don't publish large binaries - they'll be downloaded on-demand
+/bin/grafana*
+/bin/loki*
+/bin/*.tar.gz
+/bin/*.zip
+!/bin/claude-telemetry
+
+# Don't publish data directories 
+/data/
+/logs/
+/temp/
+
+# Don't publish development files
+/screenshots/
+/venv/
+.DS_Store
+*.log
+
+# Don't publish git files
+.git*
+.github/
+
+# Don't publish editor files  
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Don't publish OS files
+Thumbs.db
+ehthumbs.db
+
+# Don't publish test files
+/test/
+*.test.js
+coverage/
+
+# Keep essential files only
+# This means: lib/, scripts/, config/, templates/, setup.js, README.md, CLAUDE.md
+# As specified in package.json "files" array

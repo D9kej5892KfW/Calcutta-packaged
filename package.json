@@ -2,9 +2,19 @@
   "name": "claude-agent-telemetry",
   "version": "1.0.0",
   "description": "Claude Agent Telemetry System - Production-ready monitoring for Claude Code activities",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib/",
+    "scripts/",
+    "config/",
+    "templates/",
+    "setup.js",
+    "README.md",
+    "CLAUDE.md"
+  ],
   "scripts": {
-    "setup": "./scripts/claude-telemetry setup",
+    "setup": "node setup.js",
+    "postinstall": "node setup.js",
     "presetup": "echo '🚀 Starting Claude Agent Telemetry setup...'",
     "postsetup": "echo '✅ Setup complete! Run npm start to begin monitoring'",
     "start": "./scripts/claude-telemetry start",
@@ -35,7 +45,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D9kej5892KfW/Calcutta-multi.git"
+    "url": "https://github.com/D9kej5892KfW/Calcutta-packaged.git"
+  },
+  "homepage": "https://github.com/D9kej5892KfW/Calcutta-packaged#readme",
+  "bugs": {
+    "url": "https://github.com/D9kej5892KfW/Calcutta-packaged/issues"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -48,8 +62,11 @@
     "x64",
     "arm64"
   ],
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "node-fetch": "^2.7.0",
+    "tar": "^6.2.0",
+    "yauzl": "^2.10.0"
+  },
   "config": {
     "loki_port": "3100",
     "grafana_port": "3000",
