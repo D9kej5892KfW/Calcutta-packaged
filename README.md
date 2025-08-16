@@ -256,6 +256,19 @@ npm run logs       # View live telemetry
 4. **Start monitoring**: `npm start`
 5. **Open dashboard**: `npm run dashboard`
 
+## 🏗️ Third-Party Software
+
+This package downloads and uses the following open-source software:
+
+- **[Grafana](https://github.com/grafana/grafana)** - Licensed under Apache 2.0 License
+- **[Loki](https://github.com/grafana/loki)** - Licensed under Apache 2.0 License
+
+These components are downloaded from their official release channels and used as intended by their creators. See their respective repositories for full license terms.
+
+### Disclaimer
+
+This package downloads third-party binaries. Users are responsible for complying with the licenses of downloaded software.
+
 ## 🤝 Contributing
 
 1. Fork the repository
