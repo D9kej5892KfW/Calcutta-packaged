@@ -45,11 +45,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D9kej5892KfW/Calcutta-packaged.git"
+    "url": "https://github.com/D9kej5892KfW/Calcutta-npm.git"
   },
-  "homepage": "https://github.com/D9kej5892KfW/Calcutta-packaged#readme",
+  "homepage": "https://github.com/D9kej5892KfW/Calcutta-npm#readme",
   "bugs": {
-    "url": "https://github.com/D9kej5892KfW/Calcutta-packaged/issues"
+    "url": "https://github.com/D9kej5892KfW/Calcutta-npm/issues"
   },
   "engines": {
     "node": ">=14.0.0"
