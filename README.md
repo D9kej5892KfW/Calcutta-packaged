@@ -219,6 +219,47 @@ npm run logs       # View live telemetry
 | "Permission denied" | `chmod +x scripts/*.sh` |
 | "Python import error" | Check virtual environment: `source venv/bin/activate` |
 
+### **Complete Cleanup & Shutdown**
+
+When you need to completely stop and clean up your telemetry environment:
+
+```bash
+# 1. Stop telemetry services
+npx claude-telemetry stop
+
+# 2. Verify services are stopped
+npx claude-telemetry status
+
+# 3. Check for any remaining processes
+ps aux | grep -E 'loki|grafana' | grep -v grep
+
+# 4. Kill any stubborn processes if found
+# pkill loki
+# pkill grafana
+
+# 5. Verify ports are free
+netstat -tlnp 2>/dev/null | grep -E ':300[01]|:9096|:3100' || echo "All ports free"
+
+# 6. Exit the test directory
+cd ~
+
+# 7. Clean up test directory (optional)
+rm -rf /tmp/test-claude-telemetry*
+```
+
+**Complete System Reset** (if needed):
+```bash
+# Remove cached binaries (requires re-download next time)
+rm -rf ~/.claude-telemetry/
+
+# Remove NPM package completely
+npm uninstall -g claude-agent-telemetry
+npm cache clean --force
+rm -rf ~/.npm/_npx/
+```
+
+This ensures a completely clean environment for fresh testing or troubleshooting.
+
 ## 📋 Requirements
 
 ### **Prerequisites**

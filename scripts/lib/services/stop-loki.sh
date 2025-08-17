@@ -12,11 +12,18 @@ source "$SCRIPT_DIR/../common/paths.sh" || {
 PID_FILE="$(get_loki_pid)"
 
 if [[ ! -f "$PID_FILE" ]]; then
-    echo "Loki PID file not found. Is Loki running?"
-    exit 1
+    echo "Loki PID file not found. Attempting to find Loki process..."
+    # Try to find Loki process by name
+    LOKI_PID=$(pgrep -f "loki.*-config.file" 2>/dev/null | head -1)
+    if [[ -n "$LOKI_PID" ]]; then
+        echo "Found Loki process (PID: $LOKI_PID)"
+    else
+        echo "No Loki process found."
+        exit 1
+    fi
+else
+    LOKI_PID=$(<"$PID_FILE")
 fi
-
-LOKI_PID=$(<"$PID_FILE")
 
 if ! kill -0 "$LOKI_PID" 2>/dev/null; then
     echo "Loki process (PID: $LOKI_PID) is not running"

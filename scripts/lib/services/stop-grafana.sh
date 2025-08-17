@@ -1,4 +1,4 @@
-#\!/bin/bash
+#!/bin/bash
 # Stop Grafana server
 
 # Source the common path utilities
@@ -27,6 +27,20 @@ if [[ -f "$PID_FILE" ]]; then
         rm -f "$PID_FILE"
     fi
 else
-    echo "Grafana PID file not found"
+    echo "Grafana PID file not found. Attempting to find Grafana process..."
+    # Try to find Grafana process by name
+    PID=$(pgrep -f "grafana.*server" 2>/dev/null | head -1)
+    if [[ -n "$PID" ]]; then
+        echo "Found Grafana process (PID: $PID)"
+        echo "Stopping Grafana (PID: $PID)..."
+        kill "$PID"
+        sleep 3
+        if kill -0 "$PID" 2>/dev/null; then
+            echo "Force killing Grafana..."
+            kill -9 "$PID"
+        fi
+        echo "Grafana stopped"
+    else
+        echo "No Grafana process found."
+    fi
 fi
-EOF < /dev/null
