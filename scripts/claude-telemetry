@@ -72,7 +72,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 # Version
-VERSION="1.0.0"
+VERSION="1.0.7"
 
 # Help text
 show_help() {
