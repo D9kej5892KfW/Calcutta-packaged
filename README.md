@@ -31,6 +31,22 @@
 
 ## 🚀 Quick Start
 
+### **Method 1: NPM Package (Recommended)**
+```bash
+# 1. Install from NPM registry
+npm install -g claude-agent-telemetry
+
+# 2. Setup system
+claude-telemetry setup
+
+# 3. Start monitoring
+claude-telemetry start
+
+# 4. Open dashboard
+claude-telemetry dashboard
+```
+
+### **Method 2: Direct Repository**
 ```bash
 # 1. Clone and setup (one command!)
 git clone https://github.com/D9kej5892KfW/Calcutta-multi.git claude-telemetry
@@ -45,6 +61,23 @@ npm run dashboard
 ```
 
 **That's it!** Your Claude Code activity is now being monitored in real-time.
+
+## ⚡ **Quick Setup for Each Project**
+
+**After initial installation, you need to connect each project you want to monitor:**
+
+```bash
+# Navigate to any project
+cd /path/to/your-project
+
+# Connect it (creates .claude/ hooks)
+claude-telemetry connect
+
+# Use Claude normally - telemetry automatic!
+claude
+```
+
+**One connection per project** - then telemetry works automatically every time you use Claude in that directory! 🎯
 
 ## 📦 What You Get
 
@@ -161,14 +194,47 @@ Access comprehensive monitoring at **http://localhost:3000** (admin/admin):
 
 ## 🔧 Advanced Usage
 
-### **Multi-Project Monitoring**
-```bash
-# Connect any project to telemetry
-cd /path/to/your-project
-npm run connect
+### **Project Connection & Monitoring**
 
+**⚠️ IMPORTANT**: You must connect each project individually to enable telemetry monitoring.
+
+#### **How It Works:**
+1. **Telemetry runs globally** (one installation monitors multiple projects)
+2. **Each project needs connection** (creates Claude Code hooks)
+3. **Claude automatically sends data** (no changes to your workflow)
+
+#### **Setup for Each Project:**
+```bash
+# 1. Start telemetry services (if not running)
+claude-telemetry start
+
+# 2. Navigate to your project
+cd /path/to/your-project
+
+# 3. Connect THIS project (one-time setup)
+claude-telemetry connect
+
+# 4. Use Claude normally - telemetry works automatically!
+claude
+```
+
+#### **When You Need to Connect:**
+- ✅ **New projects** you want to monitor
+- ✅ **Each directory** where you'll use Claude Code
+- ✅ **After moving to a different project**
+- ❌ **NOT needed** for already connected projects
+- ❌ **NOT needed** when restarting Claude in same project
+
+#### **Managing Connected Projects:**
+```bash
 # List all monitored projects
-npm run status
+claude-telemetry projects
+
+# Check if current project is connected
+ls .claude/ 2>/dev/null && echo "Connected!" || echo "Need to connect"
+
+# Disconnect a project (optional)
+claude-telemetry disconnect /path/to/project
 
 # View project-specific data in Grafana
 # Filter: project="your-project-name"
@@ -259,6 +325,40 @@ rm -rf ~/.npm/_npx/
 ```
 
 This ensures a completely clean environment for fresh testing or troubleshooting.
+
+### **Fresh Installation Testing**
+
+For testing or development, here's the complete workflow from cleanup to fresh install:
+
+```bash
+# 1. Complete cleanup (if needed)
+npx claude-telemetry stop 2>/dev/null || true
+pkill loki grafana 2>/dev/null || true
+npm uninstall -g claude-agent-telemetry 2>/dev/null || true
+npm cache clean --force
+rm -rf ~/.npm/_npx/ ~/.claude-telemetry/
+rm -rf /tmp/test-claude-telemetry*
+
+# 2. Create fresh test environment
+mkdir /tmp/test-claude-telemetry-clean
+cd /tmp/test-claude-telemetry-clean
+
+# 3. Fresh installation
+npm install claude-agent-telemetry
+npx claude-telemetry setup
+
+# 4. Test functionality
+npx claude-telemetry start
+npx claude-telemetry status
+npx claude-telemetry dashboard
+
+# 5. Test stop functionality
+npx claude-telemetry stop
+curl http://localhost:3100/ready 2>/dev/null || echo "✅ Loki stopped"
+curl http://localhost:3000/api/health 2>/dev/null || echo "✅ Grafana stopped"
+```
+
+Perfect for validating package functionality or troubleshooting issues.
 
 ## 📋 Requirements
 
