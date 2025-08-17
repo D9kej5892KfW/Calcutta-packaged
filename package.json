@@ -1,6 +1,6 @@
 {
   "name": "claude-agent-telemetry",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Claude Agent Telemetry System - Production-ready monitoring for Claude Code activities",
   "main": "lib/index.js",
   "files": [
