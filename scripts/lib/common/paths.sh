@@ -12,10 +12,12 @@ find_telemetry_root() {
     while [[ "$dir" != "/" ]] && [[ $depth -lt $max_depth ]]; do
         # Check for telemetry project markers
         if [[ -f "$dir/package.json" ]] && 
-           [[ -f "$dir/bin/loki" ]] && 
            grep -q "claude-agent-telemetry" "$dir/package.json" 2>/dev/null; then
-            echo "$dir"
-            return 0
+            # Additional validation for npm vs traditional installation
+            if [[ -f "$dir/bin/loki" ]] || [[ -f "$dir/setup.js" ]]; then
+                echo "$dir"
+                return 0
+            fi
         fi
         
         # Go up one directory level
@@ -32,14 +34,23 @@ Searched $depth levels up to: $dir
 
 Could not find directory containing:
   - package.json with "claude-agent-telemetry"
-  - bin/loki executable
+  - bin/loki executable OR setup.js file
   - Expected telemetry project structure
 
 This script must be run from within the telemetry project directory.
-To fix: cd to your telemetry project and run the script from there.
+For npm installations: Use 'npx claude-telemetry' commands from any directory.
+For traditional installations: cd to your telemetry project and run the script from there.
 EOF
     return 1
 }
+
+# Auto-detect NPM mode if not already set
+if [[ -z "${CLAUDE_TELEMETRY_NPM_MODE:-}" ]]; then
+    SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")"
+    if [[ "$SCRIPT_PATH" == *"node_modules"* ]] || [[ "$SCRIPT_PATH" == *".npm"* ]]; then
+        export CLAUDE_TELEMETRY_NPM_MODE="true"
+    fi
+fi
 
 # Initialize and cache the telemetry root path
 if [[ -z "$TELEMETRY_ROOT" ]]; then
@@ -49,8 +60,31 @@ fi
 
 # Path helper functions - these provide consistent access to project paths
 get_telemetry_root() { echo "$TELEMETRY_ROOT"; }
-get_loki_bin() { echo "$TELEMETRY_ROOT/bin/loki"; }
-get_grafana_bin() { echo "$TELEMETRY_ROOT/bin/grafana"; }
+get_loki_bin() { 
+    # Check if we're in npm mode and use Node.js to get binary path
+    if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]] && command -v node >/dev/null 2>&1; then
+        node -e "
+            const BinaryManager = require('$TELEMETRY_ROOT/lib/binary-manager');
+            const manager = new BinaryManager();
+            manager.getBinaryPath('loki').then(path => console.log(path)).catch(() => console.log('$TELEMETRY_ROOT/bin/loki'));
+        " 2>/dev/null || echo "$TELEMETRY_ROOT/bin/loki"
+    else
+        echo "$TELEMETRY_ROOT/bin/loki"
+    fi
+}
+
+get_grafana_bin() { 
+    # Check if we're in npm mode and use Node.js to get binary path
+    if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]] && command -v node >/dev/null 2>&1; then
+        node -e "
+            const BinaryManager = require('$TELEMETRY_ROOT/lib/binary-manager');
+            const manager = new BinaryManager();
+            manager.getBinaryPath('grafana').then(path => console.log(path)).catch(() => console.log('$TELEMETRY_ROOT/bin/grafana'));
+        " 2>/dev/null || echo "$TELEMETRY_ROOT/bin/grafana"
+    else
+        echo "$TELEMETRY_ROOT/bin/grafana"
+    fi
+}
 get_config_dir() { echo "$TELEMETRY_ROOT/config"; }
 get_logs_dir() { echo "$TELEMETRY_ROOT/logs"; }
 get_data_dir() { echo "$TELEMETRY_ROOT/data"; }

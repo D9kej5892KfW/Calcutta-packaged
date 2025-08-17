@@ -4,8 +4,22 @@
 
 set -e
 
-# Configuration
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Auto-detect NPM mode and resolve correct PROJECT_DIR
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")"
+if [[ -z "${CLAUDE_TELEMETRY_NPM_MODE:-}" ]]; then
+    if [[ "$SCRIPT_PATH" == *"node_modules"* ]] || [[ "$SCRIPT_PATH" == *".npm"* ]]; then
+        export CLAUDE_TELEMETRY_NPM_MODE="true"
+        # For npm installations, resolve to the actual package directory
+        # SCRIPT_PATH should be like: /path/node_modules/claude-agent-telemetry/scripts/claude-telemetry
+        PROJECT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")/.." && pwd)"
+    else
+        # Traditional installation
+        PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    fi
+else
+    PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
+
 SCRIPTS_DIR="$PROJECT_DIR/scripts"
 LIB_DIR="$SCRIPTS_DIR/lib"
 

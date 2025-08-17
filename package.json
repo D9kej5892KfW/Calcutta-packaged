@@ -1,6 +1,6 @@
 {
   "name": "claude-agent-telemetry",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "Claude Agent Telemetry System - Production-ready monitoring for Claude Code activities",
   "main": "lib/index.js",
   "files": [
@@ -45,7 +45,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/D9kej5892KfW/Calcutta-npm.git"
+    "url": "git+https://github.com/D9kej5892KfW/Calcutta-npm.git"
   },
   "homepage": "https://github.com/D9kej5892KfW/Calcutta-npm#readme",
   "bugs": {
@@ -73,6 +73,6 @@
     "python_min_version": "3.8"
   },
   "bin": {
-    "claude-telemetry": "./scripts/claude-telemetry"
+    "claude-telemetry": "scripts/claude-telemetry"
   }
 }

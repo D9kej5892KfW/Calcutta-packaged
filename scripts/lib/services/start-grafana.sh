@@ -44,7 +44,14 @@ echo "  Binary: $GRAFANA_BIN"
 echo "  Config: $GRAFANA_CONFIG"
 echo "  Log:    $GRAFANA_LOG"
 
-"$GRAFANA_BIN" --config="$GRAFANA_CONFIG" --homepath="$(get_telemetry_root)/bin/grafana-v11.1.0" > "$GRAFANA_LOG" 2>&1 &
+# Get the Grafana binary directory (works for both npm and traditional installs)
+GRAFANA_HOMEPATH="$(dirname "$GRAFANA_BIN")"
+if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]]; then
+    # For npm installs, homepath should be the grafana installation directory
+    GRAFANA_HOMEPATH="$(dirname "$(dirname "$GRAFANA_BIN")")"
+fi
+
+"$GRAFANA_BIN" --config="$GRAFANA_CONFIG" --homepath="$GRAFANA_HOMEPATH" > "$GRAFANA_LOG" 2>&1 &
 GRAFANA_PID=$!
 
 # Save PID
