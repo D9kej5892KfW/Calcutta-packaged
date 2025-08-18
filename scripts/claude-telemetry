@@ -72,7 +72,7 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 # Version
-VERSION="1.0.8"
+VERSION="1.1.0"
 
 # Help text
 show_help() {
@@ -105,6 +105,11 @@ ${BOLD}DATA & ANALYTICS:${NC}
     ${GREEN}analytics${NC}          Process telemetry data for ML analysis
     ${GREEN}alerts${NC}             Manage alert system
     ${GREEN}query [query]${NC}      Execute custom Loki query
+
+${BOLD}SESSION MANAGEMENT:${NC}
+    ${GREEN}session-status${NC}     Show active telemetry sessions and process status
+    ${GREEN}cleanup-orphaned${NC}   Cleanup orphaned processes and migrate to main installation
+    ${GREEN}registry-repair${NC}    Repair registry to sync with actual configurations
 
 ${BOLD}MAINTENANCE:${NC}
     ${GREEN}cleanup${NC}            Clean up logs and temporary files
@@ -290,6 +295,30 @@ cmd_cleanup() {
     execute_or_dry_run "$LIB_DIR/maintenance/log-cleanup.sh" "Clean up logs and temporary files"
 }
 
+# Session Management Commands
+cmd_session_status() {
+    log_info "Showing active telemetry sessions..."
+    local args=()
+    for arg in "${ARGS[@]}"; do
+        args+=("$arg")
+    done
+    execute_or_dry_run "$LIB_DIR/session/session-status.sh ${args[*]}" "Show session status"
+}
+
+cmd_cleanup_orphaned() {
+    log_info "Cleaning up orphaned telemetry sessions..."
+    local args=()
+    for arg in "${ARGS[@]}"; do
+        args+=("$arg")
+    done
+    execute_or_dry_run "$LIB_DIR/session/cleanup-orphaned.sh ${args[*]}" "Cleanup orphaned sessions"
+}
+
+cmd_registry_repair() {
+    log_info "Repairing registry to sync with actual configurations..."
+    execute_or_dry_run "$LIB_DIR/session/registry-repair.sh" "Repair registry"
+}
+
 cmd_backup() {
     log_info "Backing up telemetry data..."
     local backup_file="telemetry-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
@@ -413,6 +442,15 @@ main() {
             ;;
         update)
             cmd_update
+            ;;
+        session-status|sessions)
+            cmd_session_status
+            ;;
+        cleanup-orphaned)
+            cmd_cleanup_orphaned
+            ;;
+        registry-repair)
+            cmd_registry_repair
             ;;
         *)
             log_error "Unknown command: $COMMAND"

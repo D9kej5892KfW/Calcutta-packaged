@@ -28,12 +28,28 @@
 - **📊 Live Dashboards** - Real-time Grafana visualizations with 34K+ data points
 - **🚀 Zero-Config Setup** - One command installation with automatic dependency management
 - **🔗 Multi-Project Support** - Monitor unlimited projects from central installation
+- **🆕 Session Management** - Central tracking of all telemetry processes and orphaned cleanup
 
 ## 🚀 Quick Start
 
-### **Method 1: NPM Package (Recommended)**
+### **Method 1: Local NPM Installation (Recommended)**
 ```bash
-# 1. Install from NPM registry
+# 1. In your project directory
+npm install claude-agent-telemetry
+
+# 2. Setup system
+npx claude-telemetry setup
+
+# 3. Start monitoring
+npx claude-telemetry start
+
+# 4. Open dashboard
+npx claude-telemetry dashboard
+```
+
+### **Method 2: Global NPM Installation**
+```bash
+# 1. Install globally
 npm install -g claude-agent-telemetry
 
 # 2. Setup system
@@ -46,7 +62,9 @@ claude-telemetry start
 claude-telemetry dashboard
 ```
 
-### **Method 2: Direct Repository**
+> **Troubleshooting Global Install**: If you get "command not found" errors after global installation, use Method 1 (local + npx) instead.
+
+### **Method 3: Direct Repository**
 ```bash
 # 1. Clone and setup (one command!)
 git clone https://github.com/D9kej5892KfW/Calcutta-multi.git claude-telemetry
@@ -94,6 +112,13 @@ claude
 - ✅ **Security monitoring** with 12+ detection rules
 - ✅ **Cross-platform** Linux and macOS support
 
+### **🆕 Session Management Features**
+- ✅ **Central process tracking** - Know which Loki/Grafana serves which projects
+- ✅ **Orphaned process detection** - Find forgotten test installations automatically
+- ✅ **One-command cleanup** - Migrate projects from orphaned sessions to main installation
+- ✅ **Registry synchronization** - Keep tracking in sync with actual .claude configurations
+- ✅ **Health monitoring** - Color-coded session status (Healthy/Degraded/Failed)
+
 ## 📸 See It In Action
 
 ![Dashboard Overview](screenshots/Basic-dashboard-1.png)
@@ -107,18 +132,42 @@ claude
 
 ## 📋 Commands
 
-### **npm Interface (Recommended)**
+### **Local Installation (npx - Recommended)**
+| Command | Description |
+|---------|-------------|
+| `npx claude-telemetry setup` | **One-time setup** - installs everything automatically |
+| `npx claude-telemetry start` | **Start monitoring** - Loki + Grafana services |
+| `npx claude-telemetry stop` | **Stop monitoring** - clean shutdown |
+| `npx claude-telemetry dashboard` | **Open Grafana** - launches browser to dashboard |
+| `npx claude-telemetry connect` | **Connect project** - add current directory to monitoring |
+| `npx claude-telemetry status` | **Check health** - validate all services |
+| `npx claude-telemetry logs` | **Live stream** - watch telemetry in real-time |
+| `npx claude-telemetry health` | **Health check** - comprehensive system validation |
+| `npx claude-telemetry test` | **End-to-end test** - validate complete data flow |
+
+### **Global Installation (if available)**
+| Command | Description |
+|---------|-------------|
+| `claude-telemetry setup` | **One-time setup** - installs everything automatically |
+| `claude-telemetry start` | **Start monitoring** - Loki + Grafana services |
+| `claude-telemetry stop` | **Stop monitoring** - clean shutdown |
+| `claude-telemetry dashboard` | **Open Grafana** - launches browser to dashboard |
+| `claude-telemetry connect` | **Connect project** - add current directory to monitoring |
+
+### **🆕 Session Management**
+| Command | Description |
+|---------|-------------|
+| `npx claude-telemetry session-status` | **Session overview** - show all active telemetry sessions |
+| `npx claude-telemetry cleanup-orphaned` | **Cleanup orphaned** - remove forgotten test installations |
+| `npx claude-telemetry registry-repair` | **Repair registry** - sync with actual configurations |
+
+### **Repository Installation (npm scripts)**
 | Command | Description |
 |---------|-------------|
 | `npm run setup` | **One-time setup** - installs everything automatically |
 | `npm start` | **Start monitoring** - Loki + Grafana services |
 | `npm stop` | **Stop monitoring** - clean shutdown |
 | `npm run dashboard` | **Open Grafana** - launches browser to dashboard |
-| `npm run connect` | **Connect project** - add current directory to monitoring |
-| `npm run status` | **Check health** - validate all services |
-| `npm run logs` | **Live stream** - watch telemetry in real-time |
-| `npm run health` | **Health check** - comprehensive system validation |
-| `npm test` | **End-to-end test** - validate complete data flow |
 
 ### **Direct CLI Interface**
 ```bash
@@ -133,6 +182,11 @@ claude
 ./scripts/claude-telemetry connect [path]     # Connect project to telemetry
 ./scripts/claude-telemetry disconnect [path]  # Disconnect project
 ./scripts/claude-telemetry projects           # List connected projects
+
+# Session management (NEW!)
+./scripts/claude-telemetry session-status     # Show active telemetry sessions & processes
+./scripts/claude-telemetry cleanup-orphaned   # Clean up orphaned processes from temp installations
+./scripts/claude-telemetry registry-repair    # Sync registry with actual .claude configurations
 
 # Analytics & maintenance
 ./scripts/claude-telemetry analytics          # Process ML data
@@ -251,6 +305,50 @@ curl -G "http://localhost:3100/loki/api/v1/query_range" \
   --data-urlencode 'query={service="claude-telemetry"} |= "outside_project_scope.*true"'
 ```
 
+### **Session Management & Cleanup**
+
+**🆕 New Feature**: Central session tracking and orphaned process management to prevent forgotten test installations.
+
+```bash
+# Check all active telemetry sessions
+claude-telemetry session-status
+
+# Show detailed session information
+claude-telemetry session-status --verbose
+
+# View only orphaned sessions
+claude-telemetry session-status --orphaned
+
+# Clean up orphaned processes (dry-run first)
+claude-telemetry cleanup-orphaned --dry-run
+
+# Execute orphaned cleanup
+claude-telemetry cleanup-orphaned
+
+# Repair registry to sync with actual configurations
+claude-telemetry registry-repair
+
+# Force registry repair
+claude-telemetry registry-repair --force
+```
+
+**What Session Management Solves**:
+- 🔍 **Track all telemetry processes** - Know which Loki/Grafana instances serve which projects
+- 🧹 **Clean up orphaned processes** - Automatically detect and remove forgotten test installations
+- 📊 **Centralized visibility** - See all sessions, their health, and project assignments
+- 🔄 **Easy migration** - Move projects from orphaned sessions to main installation
+- 📋 **Registry sync** - Keep registry in sync with actual .claude configurations
+
+**Enhanced Registry Format**:
+```
+project_path|project_name|connected_date|loki_pids|grafana_pids|installation_path|session_id|status
+```
+
+**Session Health Status**:
+- **🟢 HEALTHY**: All services running, main installation  
+- **🟡 DEGRADED**: Services running but orphaned location or missing components
+- **🔴 FAILED**: Services not running or major issues
+
 ### **Data Export**
 ```bash
 # Export telemetry data
@@ -284,6 +382,16 @@ npm run logs       # View live telemetry
 | "Missing dependencies" | `npm run setup` |
 | "Permission denied" | `chmod +x scripts/*.sh` |
 | "Python import error" | Check virtual environment: `source venv/bin/activate` |
+
+### **Session Management Issues**
+
+| Problem | Solution |
+|---------|----------|
+| **Orphaned processes from test installations** | `claude-telemetry cleanup-orphaned` |
+| **Multiple Loki/Grafana instances running** | `claude-telemetry session-status` then cleanup |
+| **Registry out of sync with .claude configs** | `claude-telemetry registry-repair` |
+| **Can't track which processes belong to what** | `claude-telemetry session-status --verbose` |
+| **Projects connected but services not running** | Check session health, restart services |
 
 ### **Complete Cleanup & Shutdown**
 

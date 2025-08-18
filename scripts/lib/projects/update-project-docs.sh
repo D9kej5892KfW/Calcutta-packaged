@@ -77,28 +77,40 @@ All Claude Code tool usage in this project is automatically captured:
 ### **View Telemetry Data**
 \`\`\`bash
 # Open Grafana dashboards
-open http://localhost:3000
+claude-telemetry dashboard
 
 # Filter by this project in LogQL queries:
 {service="claude-telemetry", project="$project_name"}
 
 # Check telemetry system status
-~/tools/agent-telemetry/scripts/status.sh
+claude-telemetry status
 \`\`\`
 
 ### **Management Commands**
 \`\`\`bash
 # View all connected projects
-~/tools/agent-telemetry/scripts/list-connected-projects.sh
+claude-telemetry projects
 
-# Check this project's connection status  
-~/tools/agent-telemetry/scripts/list-connected-projects.sh --status
+# Check session status and health
+claude-telemetry session-status
 
 # Disconnect this project (if needed)
-~/tools/agent-telemetry/scripts/disconnect-project.sh "$project_path"
+claude-telemetry disconnect "$project_path"
 
 # Reconnect this project
-~/tools/agent-telemetry/scripts/connect-project.sh "$project_path" "$project_name"
+claude-telemetry connect "$project_path"
+\`\`\`
+
+### **🆕 Session Management Commands**
+\`\`\`bash
+# Show active telemetry sessions
+claude-telemetry session-status
+
+# Clean up orphaned processes
+claude-telemetry cleanup-orphaned
+
+# Repair registry sync
+claude-telemetry registry-repair
 \`\`\`
 
 ### **Telemetry Files in This Project**
@@ -107,8 +119,9 @@ open http://localhost:3000
 - \`.telemetry-enabled\` - Telemetry activation marker
 
 ### **Telemetry System**
+- **NPM Package**: \`claude-agent-telemetry\` (v1.1.1+)
 - **Repository**: $github_repo
-- **Installation**: \`~/tools/agent-telemetry/\` (Reference Installation)
+- **Installation**: Global npm package with session management
 - **Documentation**: See main telemetry repository README for full setup guide
 
 ---
