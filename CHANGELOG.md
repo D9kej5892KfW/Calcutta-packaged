@@ -5,6 +5,28 @@ All notable changes to the Claude Agent Telemetry project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2025-08-18
+
+### 🔧 Fixed - Setup Command Output Consistency
+
+#### Setup Command Improvements
+- **Context-Aware Instructions**: Setup now shows correct commands based on installation method
+- **Local Installation**: Shows `npx claude-telemetry start` for local npm installations
+- **Global Installation**: Shows `claude-telemetry start` for global npm installations  
+- **Repository Installation**: Shows `npm start` for direct repository installations
+- **Consistency Fix**: Eliminates confusion between setup output and documentation
+
+#### Installation Method Detection
+- **NPM Mode Detection**: Automatic detection of NPM package vs repository installation
+- **Global vs Local**: Distinguishes between global and local NPM installations
+- **Dynamic Output**: Setup completion message adapts to installation context
+- **User Experience**: Commands shown match the installation method used
+
+#### Fixed Issues
+- **Documentation Mismatch**: Setup output now matches installation guide commands
+- **User Confusion**: Clear, context-appropriate next steps after setup
+- **Command Consistency**: All instructions use the correct command format
+
 ## [1.1.3] - 2025-08-18
 
 ### 📚 Documentation Updates - Installation Guide

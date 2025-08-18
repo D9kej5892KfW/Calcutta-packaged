@@ -380,14 +380,28 @@ main() {
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
     
-    echo -e "${BOLD}Quick Start:${NC}"
-    echo -e "  ${CYAN}npm start${NC}        - Start monitoring services"
-    echo -e "  ${CYAN}npm run dashboard${NC} - Open Grafana dashboard"
-    echo -e "  ${CYAN}npm run connect${NC}   - Connect a project to telemetry"
-    echo -e "  ${CYAN}npm run logs${NC}      - View live telemetry stream"
-    echo ""
-    echo -e "${BOLD}Next Steps:${NC}"
-    echo -e "1. Run ${CYAN}npm start${NC} to begin monitoring"
+    # Detect installation method and show appropriate commands
+    if [[ "${CLAUDE_TELEMETRY_NPM_MODE:-}" == "true" ]] || [[ "$PROJECT_DIR" == *"node_modules"* ]] || [[ "$PROJECT_DIR" == *".npm"* ]]; then
+        # NPM package installation - use claude-telemetry commands
+        echo -e "${BOLD}Quick Start:${NC}"
+        echo -e "  ${CYAN}claude-telemetry start${NC}     - Start monitoring services"
+        echo -e "  ${CYAN}claude-telemetry dashboard${NC} - Open Grafana dashboard"
+        echo -e "  ${CYAN}claude-telemetry connect${NC}   - Connect a project to telemetry"
+        echo -e "  ${CYAN}claude-telemetry logs${NC}      - View live telemetry stream"
+        echo ""
+        echo -e "${BOLD}Next Steps:${NC}"
+        echo -e "1. Run ${CYAN}claude-telemetry start${NC} to begin monitoring"
+    else
+        # Repository installation - use npm commands
+        echo -e "${BOLD}Quick Start:${NC}"
+        echo -e "  ${CYAN}npm start${NC}        - Start monitoring services"
+        echo -e "  ${CYAN}npm run dashboard${NC} - Open Grafana dashboard"
+        echo -e "  ${CYAN}npm run connect${NC}   - Connect a project to telemetry"
+        echo -e "  ${CYAN}npm run logs${NC}      - View live telemetry stream"
+        echo ""
+        echo -e "${BOLD}Next Steps:${NC}"
+        echo -e "1. Run ${CYAN}npm start${NC} to begin monitoring"
+    fi
     echo -e "2. Navigate to any project and use Claude Code normally"
     echo -e "3. View telemetry at ${CYAN}http://localhost:3000${NC} (admin/admin)"
     echo ""

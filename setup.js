@@ -278,14 +278,44 @@ class Setup {
       console.log(`║               Claude Agent Telemetry is ready to use!                       ║`);
       console.log(`╚══════════════════════════════════════════════════════════════════════════════╝${colors.reset}`);
       
+      // Detect installation method and show appropriate commands
+      const isNpmMode = process.env.CLAUDE_TELEMETRY_NPM_MODE === 'true' || 
+                       __dirname.includes('node_modules') || 
+                       __dirname.includes('.npm');
+      
       console.log(`\n${colors.bold}Quick Start:${colors.reset}`);
-      console.log(`  ${colors.cyan}npm start${colors.reset}        - Start monitoring services`);
-      console.log(`  ${colors.cyan}npm run dashboard${colors.reset} - Open Grafana dashboard`);
-      console.log(`  ${colors.cyan}npm run connect${colors.reset}   - Connect a project to telemetry`);
-      console.log(`  ${colors.cyan}npm run logs${colors.reset}      - View live telemetry stream`);
+      if (isNpmMode) {
+        // NPM package installation (local or global)
+        const globalInstall = process.env.npm_config_global === 'true';
+        if (globalInstall) {
+          // Global installation
+          console.log(`  ${colors.cyan}claude-telemetry start${colors.reset}     - Start monitoring services`);
+          console.log(`  ${colors.cyan}claude-telemetry dashboard${colors.reset} - Open Grafana dashboard`);
+          console.log(`  ${colors.cyan}claude-telemetry connect${colors.reset}   - Connect a project to telemetry`);
+          console.log(`  ${colors.cyan}claude-telemetry logs${colors.reset}      - View live telemetry stream`);
+        } else {
+          // Local installation with npx
+          console.log(`  ${colors.cyan}npx claude-telemetry start${colors.reset}     - Start monitoring services`);
+          console.log(`  ${colors.cyan}npx claude-telemetry dashboard${colors.reset} - Open Grafana dashboard`);
+          console.log(`  ${colors.cyan}npx claude-telemetry connect${colors.reset}   - Connect a project to telemetry`);
+          console.log(`  ${colors.cyan}npx claude-telemetry logs${colors.reset}      - View live telemetry stream`);
+        }
+      } else {
+        // Repository installation
+        console.log(`  ${colors.cyan}npm start${colors.reset}        - Start monitoring services`);
+        console.log(`  ${colors.cyan}npm run dashboard${colors.reset} - Open Grafana dashboard`);
+        console.log(`  ${colors.cyan}npm run connect${colors.reset}   - Connect a project to telemetry`);
+        console.log(`  ${colors.cyan}npm run logs${colors.reset}      - View live telemetry stream`);
+      }
       
       console.log(`\n${colors.bold}Next Steps:${colors.reset}`);
-      console.log(`1. Run ${colors.cyan}npm start${colors.reset} to begin monitoring`);
+      if (isNpmMode) {
+        const globalInstall = process.env.npm_config_global === 'true';
+        const startCmd = globalInstall ? 'claude-telemetry start' : 'npx claude-telemetry start';
+        console.log(`1. Run ${colors.cyan}${startCmd}${colors.reset} to begin monitoring`);
+      } else {
+        console.log(`1. Run ${colors.cyan}npm start${colors.reset} to begin monitoring`);
+      }
       console.log(`2. Navigate to any project and use Claude Code normally`);
       console.log(`3. View telemetry at ${colors.cyan}http://localhost:3000${colors.reset} (admin/admin)`);
       console.log(`\n${colors.yellow}Note:${colors.reset} Your Claude Code activity will be automatically monitored!`);
