@@ -177,7 +177,7 @@
             "uid": "aetvioshimfwge"
           },
           "editorMode": "code",
-          "expr": "count by (session) (rate({service=\"claude-telemetry\"}[1m]))",
+          "expr": "count by (session) (rate({service=\"claude-telemetry\"}[$__range]))",
           "queryType": "",
           "refId": "A"
         }
@@ -449,7 +449,7 @@
             "uid": "aetvioshimfwge"
           },
           "editorMode": "code",
-          "expr": "sum(rate({service=\"claude-telemetry\"}[1m]) * 60)",
+          "expr": "sum(rate({service=\"claude-telemetry\"}[$__range]) * 60)",
           "queryType": "",
           "refId": "A"
         }
@@ -820,7 +820,7 @@
             "uid": "aetvioshimfwge"
           },
           "editorMode": "code",
-          "expr": "sum by (event) (rate({service=\"claude-telemetry\"}[5m]))",
+          "expr": "sum by (event) (rate({service=\"claude-telemetry\"}[$__range]))",
           "legendFormat": "{{event}}",
           "queryType": "",
           "refId": "A"
@@ -831,7 +831,7 @@
             "uid": "aetvioshimfwge"
           },
           "editorMode": "code",
-          "expr": "sum(rate({service=\"claude-telemetry\"} |= \"outside_project_scope.*true\"[5m]))",
+          "expr": "sum(rate({service=\"claude-telemetry\"} |= \"outside_project_scope.*true\"[$__range]))",
           "legendFormat": "🚫 security_violations",
           "queryType": "",
           "refId": "B"
@@ -842,7 +842,7 @@
             "uid": "aetvioshimfwge"
           },
           "editorMode": "code",
-          "expr": "sum(rate({service=\"claude-telemetry\"} |= \"dangerous_command\"[5m]))",
+          "expr": "sum(rate({service=\"claude-telemetry\"} |= \"dangerous_command\"[$__range]))",
           "legendFormat": "⚠️ dangerous_commands",
           "queryType": "",
           "refId": "C"

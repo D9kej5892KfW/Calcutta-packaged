@@ -5,6 +5,30 @@ All notable changes to the Claude Agent Telemetry project will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-08-18
+
+### 🔧 Fixed - Grafana Dashboard Time Range Issues
+
+#### Dashboard Query Fixes
+- **Time Range Respect**: Fixed panels that ignored dashboard time picker
+- **Event Type Distribution**: Now properly filters by selected time range
+- **Tool Usage Charts**: All panels now respect time selection
+- **Dynamic Queries**: Replaced hardcoded `[1h]` intervals with `[$__range]`
+
+#### Panels Fixed
+- Total Events panel - now shows events in selected time range
+- Most Active Tool - filters by time range instead of showing all-time data
+- Tool Usage Distribution - respects time picker
+- Event Type Distribution - shows zero when no recent activity
+- Session Analysis - time-aware calculations
+- Manual vs Delegated Work - proper time filtering
+
+#### User Experience Improvements
+- **Real-time Accuracy**: Panels show zero when no recent activity
+- **Time Picker Integration**: All panels respond to dashboard time selection
+- **Expected Behavior**: 5-minute selection shows only last 5 minutes of data
+- **Dashboard Consistency**: All visualizations use same time context
+
 ## [1.1.4] - 2025-08-18
 
 ### 🔧 Fixed - Setup Command Output Consistency

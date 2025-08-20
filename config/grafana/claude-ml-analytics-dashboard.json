@@ -281,7 +281,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "avg_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | composite_risk_score != \"\" | unwrap composite_risk_score [5m])",
+          "expr": "avg_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | composite_risk_score != \"\" | unwrap composite_risk_score [$__range])",
           "queryType": "",
           "refId": "A",
           "legendFormat": "Average Risk Score"
@@ -291,7 +291,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "max_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | composite_risk_score != \"\" | unwrap composite_risk_score [5m])",
+          "expr": "max_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | composite_risk_score != \"\" | unwrap composite_risk_score [$__range])",
           "queryType": "",
           "refId": "B",
           "legendFormat": "Peak Risk Score"
@@ -470,7 +470,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "avg_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | tool_diversity != \"\" | unwrap tool_diversity [10m])",
+          "expr": "avg_over_time({service=\"claude-telemetry\"} | json | __error__=\"\" | tool_diversity != \"\" | unwrap tool_diversity [$__range])",
           "queryType": "",
           "refId": "A",
           "legendFormat": "Tool Diversity Index"
@@ -480,7 +480,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "rate({service=\"claude-telemetry\"} | json | __error__=\"\" [5m]) * 60",
+          "expr": "rate({service=\"claude-telemetry\"} | json | __error__=\"\" [$__range]) * 60",
           "queryType": "",
           "refId": "B",
           "legendFormat": "Operations Rate (per minute)"
@@ -932,7 +932,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(rate({service=\"claude-telemetry\"} | json | scope_violations > 0 [5m]))",
+          "expr": "sum(rate({service=\"claude-telemetry\"} | json | scope_violations > 0 [$__range]))",
           "queryType": "",
           "refId": "A",
           "legendFormat": "Security Violations"
@@ -942,7 +942,7 @@
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum(rate({service=\"claude-telemetry\"} | json | error_rate > 0.1 [5m]))",
+          "expr": "sum(rate({service=\"claude-telemetry\"} | json | error_rate > 0.1 [$__range]))",
           "queryType": "",
           "refId": "B",
           "legendFormat": "High Error Rate Sessions"

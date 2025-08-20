@@ -24,7 +24,7 @@
         "description": "Total telemetry events in time range",
         "targets": [
           {
-            "expr": "sum(count_over_time({service=\"claude-telemetry\"}[1h]))",
+            "expr": "sum(count_over_time({service=\"claude-telemetry\"}[$__range]))",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -68,7 +68,7 @@
         "description": "Operations per minute",
         "targets": [
           {
-            "expr": "sum(rate({service=\"claude-telemetry\"}[1m])) * 60",
+            "expr": "sum(rate({service=\"claude-telemetry\"}[$__range])) * 60",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -156,7 +156,7 @@
         "description": "Most active tool",
         "targets": [
           {
-            "expr": "topk(1, sum by (tool) (count_over_time({service=\"claude-telemetry\"}[1h])))",
+            "expr": "topk(1, sum by (tool) (count_over_time({service=\"claude-telemetry\"}[$__range])))",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -192,7 +192,7 @@
         "description": "Tool usage rate over time",
         "targets": [
           {
-            "expr": "sum(rate({service=\"claude-telemetry\"}[1m])) * 60",
+            "expr": "sum(rate({service=\"claude-telemetry\"}[$__range])) * 60",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -241,7 +241,7 @@
         "description": "Activity rate by tool type",
         "targets": [
           {
-            "expr": "sum by (tool) (rate({service=\"claude-telemetry\"}[1m])) * 60",
+            "expr": "sum by (tool) (rate({service=\"claude-telemetry\"}[$__range])) * 60",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -290,7 +290,7 @@
         "description": "Proportion of tool usage",
         "targets": [
           {
-            "expr": "sum by (tool) (count_over_time({service=\"claude-telemetry\"}[1h]))",
+            "expr": "sum by (tool) (count_over_time({service=\"claude-telemetry\"}[$__range]))",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -326,7 +326,7 @@
         "description": "Distribution of event types",
         "targets": [
           {
-            "expr": "sum by (event) (count_over_time({service=\"claude-telemetry\"}[1h]))",
+            "expr": "sum by (event) (count_over_time({service=\"claude-telemetry\"}[$__range]))",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -362,7 +362,7 @@
         "description": "Operations per session average",
         "targets": [
           {
-            "expr": "avg(sum by (session) (count_over_time({service=\"claude-telemetry\"}[1h])))",
+            "expr": "avg(sum by (session) (count_over_time({service=\"claude-telemetry\"}[$__range])))",
             "refId": "A",
             "datasource": {
               "type": "loki",
@@ -440,7 +440,7 @@
         "description": "Task tool usage patterns showing agent delegation trends",
         "targets": [
           {
-            "expr": "sum(rate({service=\"claude-telemetry\", tool=\"Task\"}[5m]))",
+            "expr": "sum(rate({service=\"claude-telemetry\", tool=\"Task\"}[$__range]))",
             "refId": "A",
             "legendFormat": "Task Delegations per 5min",
             "datasource": {
@@ -499,7 +499,7 @@
         "description": "Distribution of manual operations vs. agent delegations",
         "targets": [
           {
-            "expr": "sum(rate({service=\"claude-telemetry\", tool!=\"Task\"}[1h]))",
+            "expr": "sum(rate({service=\"claude-telemetry\", tool!=\"Task\"}[$__range]))",
             "refId": "A",
             "legendFormat": "Manual Work",
             "datasource": {
@@ -508,7 +508,7 @@
             }
           },
           {
-            "expr": "sum(rate({service=\"claude-telemetry\", tool=\"Task\"}[1h]))",
+            "expr": "sum(rate({service=\"claude-telemetry\", tool=\"Task\"}[$__range]))",
             "refId": "B",
             "legendFormat": "Delegated Work",
             "datasource": {
@@ -546,7 +546,7 @@
         "description": "Key delegation metrics for solo developer productivity",
         "targets": [
           {
-            "expr": "sum(increase({service=\"claude-telemetry\", tool=\"Task\"}[7d]))",
+            "expr": "sum(increase({service=\"claude-telemetry\", tool=\"Task\"}[$__range]))",
             "refId": "A",
             "legendFormat": "Delegations This Week",
             "datasource": {
@@ -555,7 +555,7 @@
             }
           },
           {
-            "expr": "sum(increase({service=\"claude-telemetry\", tool=\"Task\"}[1d]))",
+            "expr": "sum(increase({service=\"claude-telemetry\", tool=\"Task\"}[$__range]))",
             "refId": "B",
             "legendFormat": "Delegations Today",
             "datasource": {
